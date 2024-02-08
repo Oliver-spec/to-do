@@ -18,7 +18,6 @@ app.use(logger);
 app.get("/api/events", getEvents);
 app.post("/api/events", postEvent);
 app.delete("/api/events/:eventId", deleteEvent);
-app.patch("/api/events");
 
 app.use(errorHandler);
 
