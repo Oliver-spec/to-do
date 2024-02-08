@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const logger = require("./middlewares/logger");
+const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 const {
   getEvents,
@@ -10,10 +10,8 @@ const {
 
 const app = express();
 
-app.enable("trust proxy");
-
 app.use(express.json());
-app.use(logger);
+app.use(morgan("short"));
 
 app.get("/api/events", getEvents);
 app.post("/api/events", postEvent);
