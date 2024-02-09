@@ -3,7 +3,9 @@ const { z } = require("zod");
 
 async function getEvents(req, res, next) {
   try {
-    const events = await db.any("SELECT * FROM events");
+    const events = await db.any(
+      "SELECT event_name, event_id, status, CAST(event_date as char(10)) FROM events ORDER BY event_date"
+    );
     res.status(200).send(events);
   } catch (err) {
     next(err);
@@ -49,8 +51,39 @@ async function deleteEvent(req, res, next) {
   }
 }
 
+async function flipStatus(req, res, next) {
+  try {
+    const id = req.params.eventId;
+    let newStatus = "";
+
+    const idValidator = z.string().uuid();
+    const validatedId = idValidator.parse(id);
+
+    const { status } = await db.one(
+      "SELECT status FROM events WHERE event_id = $1",
+      [validatedId]
+    );
+
+    if (status === "notDone") {
+      newStatus = "done";
+    } else {
+      newStatus = "notDone";
+    }
+
+    await db.none("UPDATE events SET status = $1 WHERE event_id = $2", [
+      newStatus,
+      validatedId,
+    ]);
+
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getEvents,
   postEvent,
   deleteEvent,
+  flipStatus,
 };
