@@ -1,24 +1,23 @@
 function errorHandler(err, req, res, next) {
-  if (err.name === "ZodError") {
-    console.log(`ERROR NAME: ${err.name}`);
-    console.log(`ERROR MESSAGE: ${err.message}`);
+  console.log(`ERROR NAME: ${err.name}`);
+  console.log(`ERROR MESSAGE: ${err.message}`);
 
-    const response = {
-      errorName: err.name,
-      errorMessage: JSON.parse(err.message),
-    };
+  switch (err.name) {
+    case "ZodError":
+      res.status(400).send("Invalid Input");
+      break;
 
-    res.status(400).type("application/json").send(response);
-  } else {
-    console.log(`ERROR NAME: ${err.name}`);
-    console.log(`ERROR MESSAGE: ${err.message}`);
+    case "LoginError":
+      res.status(401).send("Invalid Password");
+      break;
 
-    const response = {
-      errorName: err.name,
-      errorMessage: err.message,
-    };
+    case "JsonWebTokenError":
+      res.status(401).send("Invalid Token - Please Login");
+      break;
 
-    res.status(500).type("application/json").send(response);
+    default:
+      res.status(500).send("Something Went Wrong - Please Retry");
+      break;
   }
 }
 

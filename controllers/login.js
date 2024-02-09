@@ -5,7 +5,9 @@ function login(req, res, next) {
     const { password } = req.body;
 
     if (password !== "0451") {
-      throw new Error("Invalid Password");
+      const error = new Error("Invalid Password");
+      error.name = "LoginError";
+      throw error;
     }
 
     const token = jwt.sign({ username: "oliver" }, process.env.SECRET, {
