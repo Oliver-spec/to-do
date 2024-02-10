@@ -3,10 +3,25 @@ const { z } = require("zod");
 
 async function getEvents(req, res, next) {
   try {
+    const page = req.query.page;
+    const limit = 6;
+
+    const totalItems = await db.one("SELECT COUNT(*) FROM events");
+    const maxPage = Math.ceil(totalItems.count / limit);
+
+    const pageValidator = z.coerce.number().min(1).max(maxPage);
+    const validatedPage = pageValidator.parse(page);
+
+    const offset = limit * (validatedPage - 1);
+
     const events = await db.any(
-      "SELECT event_name, event_id, status, CAST(event_date as char(10)) FROM events ORDER BY event_date"
+      "SELECT event_name, event_id, status, CAST(event_date as char(10)) FROM events ORDER BY event_date LIMIT $1 OFFSET $2",
+      [limit, offset]
     );
-    res.status(200).send(events);
+
+    const resData = { events: events, maxPage: maxPage };
+
+    res.status(200).send(resData);
   } catch (err) {
     next(err);
   }
