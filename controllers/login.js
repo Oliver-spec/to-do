@@ -1,10 +1,13 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-function login(req, res, next) {
+async function login(req, res, next) {
   try {
     const { password } = req.body;
 
-    if (password !== "0451") {
+    const match = await bcrypt.compare(password, process.env.PASSWORD_HASH);
+
+    if (!match) {
       const error = new Error("Invalid Password");
       error.name = "LoginError";
       throw error;

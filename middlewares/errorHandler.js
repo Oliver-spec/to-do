@@ -15,6 +15,10 @@ function errorHandler(err, req, res, next) {
       res.status(401).send("Invalid Token - Please Login");
       break;
 
+    case "TokenExpiredError":
+      res.status(401).send("Invalid Token - Please Login");
+      break;
+
     default:
       res.status(500).send("Something Went Wrong - Please Retry");
       break;
