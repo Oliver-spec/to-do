@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const errorHandler = require("./middlewares/errorHandler");
 const auth = require("./middlewares/auth");
 const notFound = require("./middlewares/notFound");
+const ratelimiter = require("./middlewares/rateLimiter");
 
 const login = require("./controllers/login");
 const searchEvents = require("./controllers/search");
@@ -15,6 +16,7 @@ const flipStatus = require("./controllers/flipStatus");
 
 const app = express();
 
+app.use(ratelimiter);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("short"));
