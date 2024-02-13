@@ -23,7 +23,6 @@ async function flipStatus(req, res, next) {
     );
 
     let newStatus = "";
-
     if (status === "notDone") {
       newStatus = "done";
     } else {
@@ -41,7 +40,6 @@ async function flipStatus(req, res, next) {
       `,
       [newStatus, validatedId]
     );
-
     const resData = await fetchEvents(validatedPage);
 
     res.status(201).send(resData);

@@ -5,6 +5,7 @@ const { z } = require("zod");
 async function postEvent(req, res, next) {
   try {
     const event = req.body;
+    const { page } = req.query;
 
     const eventValidator = z
       .object({
@@ -13,6 +14,7 @@ async function postEvent(req, res, next) {
       })
       .strict();
     const { eventName, eventDate } = eventValidator.parse(event);
+    const validatedPage = z.coerce.number().int().positive().safe().parse(page);
 
     await db.none(
       `
@@ -23,8 +25,7 @@ async function postEvent(req, res, next) {
       `,
       [eventName, eventDate, "notDone"]
     );
-
-    const resData = await fetchEvents(1);
+    const resData = await fetchEvents(validatedPage);
 
     res.status(201).send(resData);
   } catch (err) {
