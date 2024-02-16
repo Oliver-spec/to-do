@@ -1,6 +1,6 @@
 const db = require("../database/connect");
 
-async function fetchEvents(page, searchFor = "", limit = 6) {
+async function fetchEvents(page, searchFor = "", filter = "", limit = 6) {
   const offset = limit * (page - 1);
 
   const events = await db.any(
@@ -16,14 +16,18 @@ async function fetchEvents(page, searchFor = "", limit = 6) {
       event_name 
     ILIKE 
       $1
+    AND
+      status
+    LIKE
+      $2
     ORDER BY 
       event_date 
     LIMIT 
-      $2 
-    OFFSET 
       $3
+    OFFSET 
+      $4
     `,
-    [`%${searchFor}%`, limit, offset]
+    [`%${searchFor}%`, `${filter}%`, limit, offset]
   );
 
   const { count } = await db.one(
@@ -36,8 +40,12 @@ async function fetchEvents(page, searchFor = "", limit = 6) {
       event_name
     ILIKE
       $1
+    AND
+      status
+    ILIKE
+      $2
     `,
-    [`%${searchFor}%`]
+    [`%${searchFor}%`, `${filter}%`]
   );
   const maxPage = Math.floor(count / limit + 1);
 
