@@ -19,14 +19,14 @@ const app = express();
 app.use(ratelimiter);
 app.use(express.json());
 app.use(cookieParser());
+
+app.enable("trust proxy");
 app.use(morgan("short"));
 
+app.use("/api/events", auth);
 app.use("/", express.static("public"));
 
 app.post("/api/login", login);
-
-app.use(auth);
-
 app.get("/api/events", searchEvents);
 app.post("/api/events", postEvent);
 app.delete("/api/events/:eventId", deleteEvent);
