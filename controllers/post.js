@@ -5,7 +5,7 @@ const { z } = require("zod");
 async function postEvent(req, res, next) {
   try {
     const event = req.body;
-    const { page } = req.query;
+    const { page, searchFor, filter } = req.query;
 
     const eventValidator = z
       .object({
@@ -15,6 +15,8 @@ async function postEvent(req, res, next) {
       .strict();
     const { eventName, eventDate } = eventValidator.parse(event);
     const validatedPage = z.coerce.number().int().positive().safe().parse(page);
+    const validatedSearchFor = z.string().max(1000).parse(searchFor);
+    const validatedFilter = z.enum(["", "done", "notDone"]).parse(filter);
 
     await db.none(
       `
@@ -26,7 +28,11 @@ async function postEvent(req, res, next) {
       [eventName, eventDate, "notDone"]
     );
 
-    const resData = await fetchEvents(validatedPage);
+    const resData = await fetchEvents(
+      validatedPage,
+      validatedSearchFor,
+      validatedFilter
+    );
 
     res.status(201).send(resData);
   } catch (err) {

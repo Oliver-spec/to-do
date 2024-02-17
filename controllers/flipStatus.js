@@ -5,10 +5,12 @@ const db = require("../database/connect");
 async function flipStatus(req, res, next) {
   try {
     const id = req.params.eventId;
-    const { page } = req.query;
+    const { page, searchFor, filter } = req.query;
 
     const validatedId = z.string().uuid().parse(id);
     const validatedPage = z.coerce.number().int().positive().safe().parse(page);
+    const validatedSearchFor = z.string().max(1000).parse(searchFor);
+    const validatedFilter = z.enum(["", "done", "notDone"]).parse(filter);
 
     const { status } = await db.one(
       `
@@ -40,7 +42,11 @@ async function flipStatus(req, res, next) {
       `,
       [newStatus, validatedId]
     );
-    const resData = await fetchEvents(validatedPage);
+    const resData = await fetchEvents(
+      validatedPage,
+      validatedSearchFor,
+      validatedFilter
+    );
 
     res.status(201).send(resData);
   } catch (err) {
