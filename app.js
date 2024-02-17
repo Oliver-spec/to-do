@@ -21,6 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("short"));
 
+app.use("/", express.static("public"));
+
 app.post("/api/login", login);
 
 app.use(auth);
