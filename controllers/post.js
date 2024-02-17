@@ -1,5 +1,5 @@
 const db = require("../database/connect");
-const { fetchEvents } = require("./functions");
+const fetchEvents = require("./functions/fetchEvents");
 const { z } = require("zod");
 
 async function postEvent(req, res, next) {
@@ -25,6 +25,7 @@ async function postEvent(req, res, next) {
       `,
       [eventName, eventDate, "notDone"]
     );
+
     const resData = await fetchEvents(validatedPage);
 
     res.status(201).send(resData);

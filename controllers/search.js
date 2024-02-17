@@ -1,5 +1,5 @@
 const { z } = require("zod");
-const { fetchEvents } = require("./functions");
+const fetchEvents = require("./functions/fetchEvents");
 
 async function searchEvents(req, res, next) {
   try {

@@ -1,5 +1,5 @@
 const { z } = require("zod");
-const { fetchEvents } = require("./functions");
+const fetchEvents = require("./functions/fetchEvents");
 const db = require("../database/connect");
 
 async function flipStatus(req, res, next) {

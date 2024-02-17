@@ -1,4 +1,4 @@
-const db = require("../database/connect");
+const db = require("../../database/connect");
 
 async function fetchEvents(page, searchFor = "", filter = "", limit = 6) {
   const offset = limit * (page - 1);
@@ -54,6 +54,4 @@ async function fetchEvents(page, searchFor = "", filter = "", limit = 6) {
   return resData;
 }
 
-module.exports = {
-  fetchEvents,
-};
+module.exports = fetchEvents;
