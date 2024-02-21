@@ -6,6 +6,7 @@ const limiter = rateLimit({
   message: "Too many requests",
   legacyHeaders: false,
   standardHeaders: "draft-7",
+  validate: { trustProxy: false },
 });
 
 module.exports = limiter;

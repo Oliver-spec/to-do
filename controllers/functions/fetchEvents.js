@@ -21,7 +21,7 @@ async function fetchEvents(page, searchFor = "", filter = "", limit = 6) {
     LIKE
       $2
     ORDER BY 
-      event_date 
+      event_date, event_id
     LIMIT 
       $3
     OFFSET 
